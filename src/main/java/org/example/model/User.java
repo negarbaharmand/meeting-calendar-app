@@ -6,6 +6,8 @@ import java.util.Random;
 public class User {
     private final String username;
     private String password;
+    private boolean isExpired;
+    // todo: complete isExpired
 
     // This is used for creating user
     public User(String username) {
