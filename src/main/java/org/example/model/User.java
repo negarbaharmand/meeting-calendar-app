@@ -6,8 +6,7 @@ import java.util.Random;
 public class User {
     private final String username;
     private String password;
-    private boolean isExpired;
-    // todo: complete isExpired
+    private boolean expired;
 
     // This is used for creating user
     public User(String username) {
@@ -17,8 +16,13 @@ public class User {
 
     // This constructor is used for authentication
     public User(String username, String password) {
-        this.username = username;
+        this(username);
         this.password = password;
+    }
+
+    public User(String username, String password, boolean expired) {
+        this(username, password);
+        this.expired = expired;
     }
 
     public String getUsername() {
@@ -31,6 +35,10 @@ public class User {
 
     public String userInfo() {
         return "User" + username + " has been created successfully. " + "PWD: " + password;
+    }
+
+    public boolean isExpired() {
+        return expired;
     }
 
     public void newPassword() {
