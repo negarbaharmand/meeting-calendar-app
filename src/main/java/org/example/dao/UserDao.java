@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface UserDao {
     User createUser(String username);
 
-    // if it may be null we use Optional container to check
+    // if user may be null or wrong we use Optional container to check
     Optional<User> findByUsername(String username);
 
     boolean authenticate(User user) throws AuthenticationFailedException, UserExpiredException;
