@@ -82,22 +82,24 @@ public class MeetingDaoImpl implements MeetingDao {
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
         ) {
             preparedStatement.setInt(1, calendarId);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String title = resultSet.getString("title");
-                LocalDateTime startTime = resultSet.getTimestamp("start_time").toLocalDateTime();
-                LocalDateTime endTime = resultSet.getTimestamp("end_time").toLocalDateTime();
-                String description = resultSet.getString("_description");
-                Meeting meeting = new Meeting(id, title, startTime, endTime, description);
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String title = resultSet.getString("title");
+                    LocalDateTime startTime = resultSet.getTimestamp("start_time").toLocalDateTime();
+                    LocalDateTime endTime = resultSet.getTimestamp("end_time").toLocalDateTime();
+                    String description = resultSet.getString("_description");
+                    Meeting meeting = new Meeting(id, title, startTime, endTime, description);
 
-                meetings.add(meeting);
+                    meetings.add(meeting);
+                }
             }
-            return meetings;
+
         } catch (SQLException e) {
             throw new MySQLException("Error occurred while finding meetings by calendar ID: " + calendarId, e);
         }
+        return meetings;
     }
 
     @Override
