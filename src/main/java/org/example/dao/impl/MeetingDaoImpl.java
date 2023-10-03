@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public class MeetingDaoImpl implements MeetingDao {
@@ -74,7 +76,28 @@ public class MeetingDaoImpl implements MeetingDao {
 
     @Override
     public Collection<Meeting> findAllMeetingByCalendarId(int calendarId) {
-        return null;
+        String query = "Select * from meetings where calendar_id = ?";
+        List<Meeting> meetings = new ArrayList<>();
+        try (
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ) {
+            preparedStatement.setInt(1, calendarId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                LocalDateTime startTime = resultSet.getTimestamp("start_time").toLocalDateTime();
+                LocalDateTime endTime = resultSet.getTimestamp("end_time").toLocalDateTime();
+                String description = resultSet.getString("_description");
+                Meeting meeting = new Meeting(id, title, startTime, endTime, description);
+
+                meetings.add(meeting);
+            }
+            return meetings;
+        } catch (SQLException e) {
+            throw new MySQLException("Error occured while finding meetings by calendar ID: " + calendarId, e);
+        }
     }
 
     @Override
