@@ -1,13 +1,11 @@
 package org.example.exception;
 
-import java.sql.SQLException;
-
-public class MySQLException extends SQLException {
-    public MySQLException(String reason) {
-        super(reason);
+public class MySQLException extends RuntimeException {
+    public MySQLException(String message) {
+        super(message);
     }
 
-    public MySQLException(String reason, String SQLState) {
-        super(reason, SQLState);
+    public MySQLException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
