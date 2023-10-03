@@ -96,12 +96,20 @@ public class MeetingDaoImpl implements MeetingDao {
             }
             return meetings;
         } catch (SQLException e) {
-            throw new MySQLException("Error occured while finding meetings by calendar ID: " + calendarId, e);
+            throw new MySQLException("Error occurred while finding meetings by calendar ID: " + calendarId, e);
         }
     }
 
     @Override
     public boolean deleteMeeting(int meetingId) {
-        return false;
+        try (
+                PreparedStatement preparedStatement = connection.prepareStatement("Delete from meetings where id = ?");
+        ) {
+            preparedStatement.setInt(1, meetingId);
+            int rowsDeleted = preparedStatement.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            throw new MySQLException("Error occurred while deleting meeting with ID: \" + meetingId, e");
+        }
     }
 }
