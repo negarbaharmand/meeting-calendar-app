@@ -23,8 +23,8 @@ public class MeetingCalendar {
 
     // Used for fetching data from Calendar table
 
-    public MeetingCalendar(int id, String title, String username) {
-        this(title, username);
+    public MeetingCalendar(int id, String username, String title) {
+        this(username, title);
         this.id = id;
 
     }

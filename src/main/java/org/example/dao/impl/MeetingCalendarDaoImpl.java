@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class MeetingCalendarDaoImpl implements MeetingCalendarDao {
-    public MeetingCalendarDaoImpl() {
-        super();
-    }
+
 
     private Connection connection;
 
