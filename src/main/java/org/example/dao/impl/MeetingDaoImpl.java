@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,7 +71,7 @@ public class MeetingDaoImpl implements MeetingDao {
     }
 
     @Override
-    public Collection<Meeting> findAllMeetingByCalendarId(int calendarId) {
+    public List<Meeting> findAllMeetingByCalendarId(int calendarId) {
         String query = "Select * from meetings where calendar_id = ?";
         List<Meeting> meetings = new ArrayList<>();
         try (

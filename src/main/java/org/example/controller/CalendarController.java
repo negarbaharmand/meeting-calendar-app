@@ -11,6 +11,7 @@ import org.example.view.CalendarView;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class CalendarController {
@@ -182,7 +183,30 @@ public class CalendarController {
     }
 
     public void displayCalendar() {
+        if (!isLoggedIn) {
+            view.displayWarningMessage("You need to log in first.");
+            return;
+        }
 
+        System.out.println("Choose a calendar to display: ");
+        Collection<MeetingCalendar> calendars = calendarDao.findByUsername(username);
+        for (MeetingCalendar calendar : calendars) {
+            System.out.println("Title: " + calendar.getTitle());
+        }
+
+        String calendarTitle = view.promoteString();
+        Optional<MeetingCalendar> meetingCalendarOptional = calendarDao.findByTitleAndUsername(calendarTitle, username);
+
+        if (meetingCalendarOptional.isEmpty()) {
+            view.displayErrorMessage("Meeting calendar doesn't exist.");
+            return;
+        }
+
+        MeetingCalendar selectedCalendar = meetingCalendarOptional.get();
+
+        view.displayCalendar(selectedCalendar);
+
+        List<Meeting> meetings = meetingDao.findAllMeetingByCalendarId(selectedCalendar.getId());
+        view.displayMeetings(meetings);
     }
-
 }
