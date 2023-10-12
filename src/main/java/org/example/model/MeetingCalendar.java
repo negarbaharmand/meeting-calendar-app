@@ -6,13 +6,13 @@ import java.util.List;
 public class MeetingCalendar {
     private int id;
     private String title;
-    private List<Meeting> meetings;
     private String username;
+    private List<Meeting> meetings;
 
     // We can chain constructors when we have several constructors with duplicates
     // Used for creating Calendar
     public MeetingCalendar(String title, String username) {
-        this(title);
+        this.title = title;
         this.username = username;
     }
 
@@ -23,10 +23,10 @@ public class MeetingCalendar {
 
     // Used for fetching data from Calendar table
 
-    public MeetingCalendar(int id, String username, String title) {
-        this(username, title);
+    public MeetingCalendar(int id, String title, String username) {
         this.id = id;
-
+        this.title = title;
+        this.username = username;
     }
 
     public int getId() {

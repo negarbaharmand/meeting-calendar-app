@@ -9,7 +9,7 @@ public interface MeetingCalendarDao {
     MeetingCalendar createMeetingCalendar(String title, String username);
     Optional<MeetingCalendar> findById(int id);
     Collection<MeetingCalendar> findByUsername(String username);
-    Optional<MeetingCalendar> findByTitle(String title);
+    Optional<MeetingCalendar> findByTitleAndUsername(String title, String username);
     boolean deleteCalendar(int id);
     // todo: Add method for updating calendars as needed
 

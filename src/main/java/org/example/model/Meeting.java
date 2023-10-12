@@ -48,6 +48,10 @@ public class Meeting {
         this.description = description;
     }
 
+    public void setCalendar(MeetingCalendar calendar) {
+        this.calendar = calendar;
+    }
+
     public String getDescription() {
         return description;
     }

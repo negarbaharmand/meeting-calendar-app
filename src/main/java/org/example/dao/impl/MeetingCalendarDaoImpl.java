@@ -90,7 +90,7 @@ public class MeetingCalendarDaoImpl implements MeetingCalendarDao {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String title = resultSet.getString("title");
-                    calendars.add(new MeetingCalendar(id, username, title));
+                    calendars.add(new MeetingCalendar(id, title, username));
                 }
             }
 
@@ -102,19 +102,20 @@ public class MeetingCalendarDaoImpl implements MeetingCalendarDao {
     }
 
     @Override
-    public Optional<MeetingCalendar> findByTitle(String title) {
-        String selectQuery = "SELECT * FROM meeting_calendars WHERE title = ?";
+    public Optional<MeetingCalendar> findByTitleAndUsername(String title, String username) {
+        String selectQuery = "SELECT * FROM meeting_calendars WHERE title = ? and username = ?";
         MeetingCalendar calendar = null;
 
         try (
                 PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
 
             preparedStatement.setString(1, title);
+            preparedStatement.setString(2, username);
+
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     int id = resultSet.getInt("id");
-                    String username = resultSet.getString("username");
                     calendar = new MeetingCalendar(id, username, title);
                 }
             }
