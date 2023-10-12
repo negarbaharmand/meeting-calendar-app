@@ -51,7 +51,7 @@ public class CalendarController {
                     createNewMeeting();
                     break;
                 case 4:
-                    deleteCalendar();
+                    deleteSelectedCalendar();
                     break;
                 case 5:
                     displayCalendar();
@@ -115,8 +115,7 @@ public class CalendarController {
             view.displayWarningMessage("You need to login first.");
             return;
         }
-        // Show available calendars else display error
-        System.out.println("Choose from available calendars: ");
+        System.out.println("Available calendars: ");
         Collection<MeetingCalendar> calendars = calendarDao.findByUsername(username);
         for (MeetingCalendar calendar :
                 calendars) {
@@ -146,8 +145,40 @@ public class CalendarController {
 
     }
 
-    public boolean deleteCalendar() {
-        return false;
+    public void deleteSelectedCalendar() {
+        if (!isLoggedIn) {
+            view.displayWarningMessage("You need to log in first.");
+            return;
+        }
+
+        System.out.println("Choose title from available calendars: ");
+        Collection<MeetingCalendar> calendars = calendarDao.findByUsername(username);
+        for (MeetingCalendar calendar : calendars) {
+            System.out.println("Title: " + calendar.getTitle());
+        }
+
+        String calendarTitle = view.promoteString();
+        Optional<MeetingCalendar> meetingCalendarOptional = calendarDao.findByTitleAndUsername(calendarTitle, username);
+
+        if (meetingCalendarOptional.isEmpty()) {
+            view.displayErrorMessage("Meeting calendar doesn't exist.");
+            return;
+        }
+
+        MeetingCalendar meetingCalendar = meetingCalendarOptional.get();
+
+        // Delete associated meetings first
+        for (Meeting meeting : meetingDao.findAllMeetingByCalendarId(meetingCalendar.getId())) {
+            meetingDao.deleteMeeting(meeting.getId());
+        }
+
+        boolean isDeleted = calendarDao.deleteCalendar(meetingCalendar.getId());
+
+        if (isDeleted) {
+            view.displaySuccessMessage("Calendar deleted successfully.");
+        } else {
+            view.displayWarningMessage("Failed to delete the calendar.");
+        }
     }
 
     public void displayCalendar() {
