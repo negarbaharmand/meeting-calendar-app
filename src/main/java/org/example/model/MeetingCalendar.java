@@ -62,9 +62,10 @@ public class MeetingCalendar {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Calendar Info:").append("\n");
         stringBuilder.append("Id:").append(id).append("\n");
-        stringBuilder.append("Title:").append(title).append("\n");
-        stringBuilder.append("Username:").append(username).append("\n");
+        stringBuilder.append("title:").append(title).append("\n");
+        stringBuilder.append("username:").append(username).append("\n");
         return stringBuilder.toString();
 
     }
 }
+//mFOmfkvqgq

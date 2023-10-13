@@ -21,12 +21,12 @@ public class MeetingCalendarDaoImpl implements MeetingCalendarDao {
 
     @Override
     public MeetingCalendar createMeetingCalendar(String title, String username) {
-        String query = "Insert into meeting_calendars (username, title) VALUES (?, ?)";
+        String query = "Insert into meeting_calendars (title, username) VALUES (?, ?)";
         try(
                 PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ) {
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, title);
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, username);
 
             int affectedRows = preparedStatement.executeUpdate();
 
@@ -38,7 +38,7 @@ public class MeetingCalendarDaoImpl implements MeetingCalendarDao {
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int calendarId = generatedKeys.getInt(1);
-                    return new MeetingCalendar(calendarId, username, title);
+                    return new MeetingCalendar(calendarId, title, username);
                 } else {
                     String errorMessage = "Creating calendar failed, no ID obtained.";
                     throw new MySQLException(errorMessage);
