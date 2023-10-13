@@ -1,5 +1,8 @@
 package org.example.dao.impl;
 
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.dao.UserDao;
 import org.example.exception.AuthenticationFailedException;
 import org.example.exception.MySQLException;
@@ -12,7 +15,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+
 public class UserDaoImpl implements UserDao {
+
+    private static final Logger log = LogManager.getLogger(UserDaoImpl.class);
     private Connection connection;
 
     public UserDaoImpl(Connection connection) {
@@ -22,6 +28,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User createUser(String username) {
         String query = "Insert into users(username, _password) values(?, ?)";
+        log.info("creating user: {} ", username);
+
         try (
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
         ) {
@@ -30,17 +38,22 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.setString(2, user.getPassword());
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
-                throw new MySQLException("Creating user failed, no rows affected");
+                String errorMessage = "Creating user failed, no rows affected.";
+                log.error(errorMessage);
+                throw new MySQLException(errorMessage);
             }
             return user;
         } catch (SQLException e) {
-            throw new MySQLException("Error occurred while creating user: " + username, e);
+            String errorMessage = "Error occurred while creating user: " + username;
+            log.error(errorMessage);
+            throw new MySQLException(errorMessage, e);
         }
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
         String query = "SELECT * FROM USERS WHERE USERNAME = ?";
+
 
         try (
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -67,6 +80,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean authenticate(User user) throws AuthenticationFailedException, UserExpiredException {
         String query = "select * from users where username = ? and _password = ?";
+        log.info("authenticate user: {}:", user.getUsername());
+
 
         try (
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -90,11 +105,13 @@ public class UserDaoImpl implements UserDao {
                     throw new AuthenticationFailedException("Authentication failed");
                 }
             } else {
-                throw new AuthenticationFailedException("User not found");
+                log.warn("Authentication failed. Invalid credentials.");
+                throw new AuthenticationFailedException("Authentication failed. Invalid credentials.");
             }
 
         } catch (SQLException e) {
-            throw new MySQLException("Error occurred while authenticating user: " + user.getUsername(), e);
+            log.error("Error occurred while authenticating user by username: {}", user.getUsername(), e);
+            throw new MySQLException("Error occurred while authenticating user by username: " + user.getUsername(), e);
         }
     }
 
