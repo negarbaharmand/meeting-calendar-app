@@ -1,5 +1,8 @@
 package org.example.model;
 
+import org.example.exception.AuthenticationFailedException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.security.SecureRandom;
 import java.util.Random;
 
@@ -11,7 +14,6 @@ public class User {
     // This is used for creating user
     public User(String username) {
         this.username = username;
-        newPassword();
     }
 
     // This constructor is used for authentication
@@ -29,9 +31,20 @@ public class User {
         return username;
     }
 
-    public String getPassword() {
-        return password;
+
+        public String getHashedPassword() {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+            return passwordEncoder.encode(this.password); // 1234hhgfhgmjhmjhj,hk,jk,jg,jh
+        }
+
+        public void checkHash(String hashedPassword) throws AuthenticationFailedException {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+            boolean isEqual = passwordEncoder.matches(this.password, hashedPassword);
+            if (!isEqual) {
+                throw new AuthenticationFailedException("Authentication failed. Invalid credentials.");
+            }
     }
+
 
     public String userInfo() {
         return "User" + username + " has been created successfully. " + "PWD: " + password;
